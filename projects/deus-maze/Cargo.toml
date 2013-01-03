@@ -1,6 +1,5 @@
 [package]
-name = "sub_projects"
-publish = false
+name = "deus-maze"
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
 description = "..."
@@ -11,6 +10,7 @@ license = "MPL-2.0"
 edition = "2021"
 
 [dependencies]
+svg = "0.13.1"
 
 [dev-dependencies]
 
