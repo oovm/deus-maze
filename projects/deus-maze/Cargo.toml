@@ -3,14 +3,16 @@ name = "deus-maze"
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
 description = "..."
-repository = "https://github.com/oovm/sub_projects"
-documentation = "https://docs.rs/sub_projects"
+repository = "https://github.com/oovm/deus-maze"
+documentation = "https://docs.rs/deus-maze"
 readme = "Readme.md"
 license = "MPL-2.0"
 edition = "2021"
 
 [dependencies]
 svg = "0.13.1"
+ndarray = "0.15.6"
+rand = { version = "0.8.5", features = ["small_rng"] }
 
 [dev-dependencies]
 
