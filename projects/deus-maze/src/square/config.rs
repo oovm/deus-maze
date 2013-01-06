@@ -18,13 +18,9 @@ impl Default for Dungeon2DConfig {
     fn default() -> Self {
         let seed = rand::random::<[u8; 32]>();
         Self {
-            width: 10,
-            height: 10,
-            entry: (1, 0),
-            exit: (9, 8),
+            path: Default::default(),
             room_width: 3..5,
             room_height: 3..5,
-            seed,
         }
     }
 }
