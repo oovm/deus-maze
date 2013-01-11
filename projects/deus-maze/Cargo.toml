@@ -11,7 +11,7 @@ edition = "2021"
 
 [dependencies]
 svg = "0.13.1"
-ndarray = "0.15.6"
+ndarray = { version = "0.15.6", features = ["serde"] }
 rand = { version = "0.8.5", features = ["small_rng"] }
 serde = { version = "1.0.159", features = ["derive"] }
 
