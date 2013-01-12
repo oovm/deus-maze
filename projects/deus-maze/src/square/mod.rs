@@ -1,7 +1,7 @@
 use ndarray::Array2;
-use rand::{rngs::SmallRng, SeedableRng};
+use rand::{rngs::SmallRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
-use std::ops::Range;
+use std::{iter::from_generator, ops::Range};
 
 mod build_bfs;
 mod build_dungeon;

@@ -1,12 +1,10 @@
 use super::*;
-use rand::Rng;
-use std::{collections::BTreeSet, iter::from_generator};
 
 #[derive(Clone, Debug)]
 pub struct MazeState {
     pub width: usize,
     pub height: usize,
-    pub walked: BTreeSet<(usize, usize)>,
+    pub walked: Array2<bool>,
     pub joints: Vec<Joint>,
     pub rng: SmallRng,
 }
@@ -22,11 +20,11 @@ impl MazeState {
     }
     #[inline]
     pub fn is_finished(&self) -> bool {
-        self.walked.len() == self.width * self.height
+        self.walked.iter().all(|&walked| walked)
     }
     #[inline]
     pub fn is_walked(&self, joint: &Joint) -> bool {
-        self.walked.contains(&joint.target())
+        self.walked[[joint.x, joint.y]]
     }
 }
 
@@ -47,10 +45,11 @@ impl BfsWorker {
     }
     pub fn go_walk(&mut self, nearby: &[Joint], state: &mut MazeState) {
         let index = state.rng.gen_range(0..nearby.len());
-        let next = &nearby[index];
-        self.walked.push(next.target());
-        state.walked.insert(next.target());
-        state.joints.push(*next);
+        let joint = &nearby[index];
+        let (x, y) = (joint.target().0, joint.target().1);
+        self.walked.push((x, y));
+        state.walked[[x, y]] = true;
+        state.joints.push(*joint);
     }
 }
 
@@ -62,13 +61,19 @@ impl Maze2DConfig {
     pub fn build_grid_matrix(&self) -> Array2<bool> {
         todo!()
     }
+    pub fn initial(&self) -> Array2<bool> {
+        let mut walked = Array2::from_elem((self.width, self.height), false);
+        let (x, y) = self.get_entry();
+        walked[[x, y]] = true;
+        walked
+    }
     pub fn build_dfs(&self) -> impl Iterator<Item = Maze2D> {
         let config = self.clone();
         let mut worker = BfsWorker { walked: vec![self.get_entry()] };
         let mut state = MazeState {
             width: self.width,
             height: self.height,
-            walked: BTreeSet::new(),
+            walked: self.initial(),
             joints: Vec::with_capacity(self.width * self.height * 2),
             rng: self.get_rng(),
         };

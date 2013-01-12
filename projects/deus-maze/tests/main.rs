@@ -8,6 +8,8 @@ fn ready() {
 #[test]
 fn test() {
     let config = Maze2DConfig::default();
-    let maze = config.build_dfs().last().unwrap();
-    println!("{}", maze);
+    for (i, maze) in config.build_dfs().enumerate() {
+        println!("Maze #{}", i);
+        println!("{}", maze);
+    }
 }
