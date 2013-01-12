@@ -1,13 +1,13 @@
-use std::ops::Range;
 use ndarray::Array2;
-use rand::rngs::SmallRng;
-use rand::SeedableRng;
-use serde::{Serialize, Deserialize};
+use rand::{rngs::SmallRng, SeedableRng};
+use serde::{Deserialize, Serialize};
+use std::ops::Range;
 
-mod config;
 mod build_bfs;
 mod build_dungeon;
+mod config;
 mod display;
+mod joint;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Maze2DConfig {
@@ -26,12 +26,6 @@ pub struct RoomConfig {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Maze2D {
-    config: Maze2DConfig,
-    grid: Array2<bool>,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Room {
     pub x: usize,
     pub y: usize,
@@ -39,21 +33,34 @@ pub struct Room {
     pub height: usize,
 }
 
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+pub enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+pub struct Joint {
+    pub x: usize,
+    pub y: usize,
+    pub direction: Direction,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Maze2D {
+    config: Maze2DConfig,
+    joints: Vec<Joint>,
+    rooms: Vec<Room>,
+}
 
 impl Default for Maze2DConfig {
     fn default() -> Self {
         let seed = rand::random::<[u8; 32]>();
-        Self {
-            width: 5,
-            height: 5,
-            entry: None,
-            exit: None,
-            room: None,
-            seed,
-        }
+        Self { width: 5, height: 5, entry: None, exit: None, room: None, seed }
     }
 }
-
 
 impl Maze2DConfig {
     /// Create a new Maze2DConfig with give size
@@ -66,14 +73,10 @@ impl Maze2DConfig {
     /// # Examples
     ///
     /// ```
-    ///   use deus_maze::Maze2DConfig;
+    /// use deus_maze::Maze2DConfig;
     /// ```
     pub fn new(width: usize, height: usize) -> Self {
-        Self {
-            width,
-            height,
-            ..Default::default()
-        }
+        Self { width, height, ..Default::default() }
     }
     pub fn get_size(&self) -> (usize, usize) {
         (self.width, self.height)

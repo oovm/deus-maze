@@ -1,8 +1,9 @@
+#![feature(generators)]
+#![feature(iter_from_generator)]
+
 mod errors;
 
 pub use errors::{Error, Result};
 
-mod square;
 mod renderer;
-
-pub use crate::square::{Maze2DConfig, Maze2D};
+pub mod square;
