@@ -1,7 +1,6 @@
 use crate::square::{Joint, Maze2D};
 use ndarray::Array2;
 use std::fmt::{Debug, Display, Formatter};
-use svg::node::element::{Polygon, Rectangle, SVG};
 
 impl Debug for Joint {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -78,24 +77,5 @@ impl Maze2D {
             s.push('\n');
         }
         s
-    }
-
-    /// Convert the maze to a SVG polygon.
-    pub fn get_svg_rect(&self) -> SVG {
-        let mut svg = SVG::new()
-            .set("width", self.config.width)
-            .set("height", self.config.height)
-            .set("viewBox", (0, 0, self.config.width, self.config.height));
-        for room in self.get_rectangles() {
-            svg = svg.add(
-                Rectangle::new()
-                    .set("x", room.x)
-                    .set("y", room.y)
-                    .set("width", room.width)
-                    .set("height", room.height)
-                    .set("fill", "white"),
-            );
-        }
-        svg
     }
 }

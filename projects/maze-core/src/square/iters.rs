@@ -1,6 +1,5 @@
 use super::*;
 use ndarray::s;
-use svg::node::element::Rectangle;
 
 impl Maze2D {
     pub fn new(config: &Maze2DConfig, joints: &[Joint], rooms: &[Room]) -> Self {
