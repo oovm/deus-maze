@@ -1,5 +1,5 @@
 [package]
-name = "maze-renderer"
+name = "maze-image"
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
 description = "..."
@@ -10,11 +10,14 @@ license = "MPL-2.0"
 edition = "2021"
 
 [dependencies]
-maze-core = { path = "../maze-core" }
-svg = { version = "0.13.1", optional = true }
-image = { version = "0.24.6", optional = true }
+image = "0.24.6"
+
+[dependencies.maze-core]
+version = "0.0.0"
+path = "../maze-core"
 
 [dev-dependencies]
 
 [features]
-default = ["svg", "image"]
+default = ["mota"]
+mota = []

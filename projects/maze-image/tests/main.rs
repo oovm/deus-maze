@@ -1,5 +1,5 @@
 use maze_core::square::Maze2DConfig;
-use maze_renderer::{MazeBlockRenderer, MazeLineRenderer};
+use maze_image::{MazeBlockRenderer, MazeLineRenderer};
 
 #[test]
 fn ready() {
@@ -19,10 +19,10 @@ fn test() {
 fn test2() {
     let config = Maze2DConfig::default().with_size(10, 10);
     let out = config.build_dfs().last().unwrap();
-    let block = MazeBlockRenderer::new(50);
+    let block = MazeBlockRenderer::new(20);
     let image = block.render_image_2d(&out);
     image.save("block.png").unwrap();
-    let line = MazeLineRenderer::new(50);
+    let line = MazeLineRenderer::new(42);
     let image = line.render_image_2d(&out);
     image.save("line.png").unwrap();
 }
