@@ -1,9 +1,6 @@
 use super::*;
 
 impl Joint {
-    pub fn new(x: usize, y: usize, direction: Direction) -> Self {
-        Self { x, y, direction }
-    }
     pub fn all(x: usize, y: usize, width: usize, height: usize) -> Vec<Self> {
         let mut joints = Vec::with_capacity(4);
         if y > 0 {

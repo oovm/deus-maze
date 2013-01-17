@@ -6,8 +6,8 @@ use std::{iter::from_generator, ops::Range};
 mod build_dfs;
 mod build_prim;
 mod display;
+mod iters;
 mod joint;
-mod maze;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Maze2DConfig {
