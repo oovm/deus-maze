@@ -22,10 +22,10 @@ impl Maze2D {
                 if !m01[[x * 2 + 0, y * 2 + 1]] {
                     walls.push(Joint::new(x, y, Direction::Left));
                 }
-                else if !m01[[x * 2 + 2, y * 2 + 1]] {
+                if !m01[[x * 2 + 2, y * 2 + 1]] {
                     walls.push(Joint::new(x, y, Direction::Right));
                 }
-                else if !m01[[x * 2 + 1, y * 2 + 0]] {
+                if !m01[[x * 2 + 1, y * 2 + 0]] {
                     walls.push(Joint::new(x, y, Direction::Up));
                 }
                 else if !m01[[x * 2 + 1, y * 2 + 2]] {
