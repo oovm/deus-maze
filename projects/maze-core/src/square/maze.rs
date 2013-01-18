@@ -28,7 +28,7 @@ impl Maze2D {
                 if !m01[[x * 2 + 1, y * 2 + 0]] {
                     walls.push(Joint::new(x, y, Direction::Up));
                 }
-                else if !m01[[x * 2 + 1, y * 2 + 2]] {
+                if !m01[[x * 2 + 1, y * 2 + 2]] {
                     walls.push(Joint::new(x, y, Direction::Down));
                 }
             }

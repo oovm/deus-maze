@@ -30,52 +30,63 @@ impl MazeLineRenderer {
     }
     pub fn render_image_2d(&self, maze: &Maze2D) -> RgbaImage {
         let (w, h) = maze.get_size();
-        let w = self.block_size * w;
-        let h = self.block_size * h;
-        let mut image = RgbaImage::new(w as u32, h as u32);
-        // self.render_border(&mut image);
+        let bw = self.block_size * w;
+        let bh = self.block_size * h;
+        let mut image = RgbaImage::new(bw as u32, bh as u32);
         for wall in maze.get_walls() {
-            self.render_wall(&mut image, &wall);
+            self.render_wall(&mut image, &wall, w, h);
         }
         image
     }
-    fn render_border(&self, image: &mut RgbaImage) {
-        let (w, h) = image.dimensions();
-        let w = w as usize;
-        let h = h as usize;
-        self.render_rect(image, 0, 0, w, self.wall_width_half);
-        self.render_rect(image, 0, 0, self.wall_width_half, h);
-        self.render_rect(image, 0, h - self.wall_width_half, w, self.wall_width_half);
-        self.render_rect(image, w - self.wall_width_half, 0, self.wall_width_half, h);
-    }
-    fn render_wall(&self, image: &mut RgbaImage, joint: &Joint) {
+    fn render_wall(&self, image: &mut RgbaImage, joint: &Joint, lower: usize, right: usize) {
+        let border = self.wall_width_half;
+        println!("{} {}", joint.y, lower);
         match joint.direction {
+            Direction::Up if joint.y == 0 => self.render_rect(image, joint.x * self.block_size, 0, self.block_size, border * 2),
             Direction::Up => self.render_rect(
                 image,
                 joint.x * self.block_size,
                 joint.y * self.block_size,
                 self.block_size + self.wall_width_half,
-                self.wall_width_half + self.wall_width_half,
+                border,
+            ),
+            // lowest wall
+            Direction::Down if joint.y == lower - 1 => self.render_rect(
+                image,
+                joint.x * self.block_size,
+                (joint.y + 1) * self.block_size - border * 2,
+                self.block_size,
+                border * 2,
             ),
             Direction::Down => self.render_rect(
                 image,
                 joint.x * self.block_size,
-                joint.y * self.block_size + self.block_size - self.wall_width_half,
+                (joint.y + 1) * self.block_size - border,
                 self.block_size + self.wall_width_half,
-                self.wall_width_half + self.wall_width_half,
+                border,
             ),
+            Direction::Left if joint.x == 0 => {
+                self.render_rect(image, 0, joint.y * self.block_size, border * 2, self.block_size)
+            }
             Direction::Left => self.render_rect(
                 image,
                 joint.x * self.block_size,
                 joint.y * self.block_size,
-                self.wall_width_half + self.wall_width_half,
+                border,
                 self.block_size + self.wall_width_half,
+            ),
+            Direction::Right if joint.x == right - 1 => self.render_rect(
+                image,
+                (joint.x + 1) * self.block_size - border * 2,
+                joint.y * self.block_size,
+                border * 2,
+                self.block_size,
             ),
             Direction::Right => self.render_rect(
                 image,
-                joint.x * self.block_size + self.block_size - self.wall_width_half,
+                (joint.x + 1) * self.block_size - border,
                 joint.y * self.block_size,
-                self.wall_width_half + self.wall_width_half,
+                border,
                 self.block_size + self.wall_width_half,
             ),
         }
@@ -83,7 +94,12 @@ impl MazeLineRenderer {
     fn render_rect(&self, image: &mut RgbaImage, x: usize, y: usize, width: usize, height: usize) {
         for i in x..x + width {
             for j in y..y + height {
-                image.put_pixel(i as u32, j as u32, self.wall_color);
+                match image.get_pixel_mut_checked(i as u32, j as u32) {
+                    Some(s) => {
+                        *s = self.wall_color;
+                    }
+                    None => {}
+                }
             }
         }
     }
