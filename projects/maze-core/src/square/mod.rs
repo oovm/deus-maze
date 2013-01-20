@@ -16,6 +16,7 @@ pub struct Maze2DConfig {
     entry: Option<(usize, usize)>,
     exit: Option<(usize, usize)>,
     room: Option<RoomConfig>,
+    bad: Vec<(usize, usize)>,
     seed: [u8; 32],
 }
 
@@ -53,12 +54,13 @@ pub struct Maze2D {
     config: Maze2DConfig,
     joints: Vec<Joint>,
     rooms: Vec<Room>,
+    solution: Vec<Joint>,
 }
 
 impl Default for Maze2DConfig {
     fn default() -> Self {
         let seed = rand::random::<[u8; 32]>();
-        Self { width: 5, height: 5, entry: None, exit: None, room: None, seed }
+        Self { width: 5, height: 5, entry: None, exit: None, room: None, bad: vec![], seed }
     }
 }
 

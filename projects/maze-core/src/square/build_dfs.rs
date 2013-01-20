@@ -44,16 +44,14 @@ impl BfsWorker {
 }
 
 impl Maze2DConfig {
-    pub fn build_path_matrix(&self) -> Array2<bool> {
-        todo!()
-    }
-    pub fn build_grid_matrix(&self) -> Array2<bool> {
-        todo!()
-    }
     pub fn initial(&self) -> Array2<bool> {
         let mut walked = Array2::from_elem((self.width, self.height), false);
         let (x, y) = self.get_entry();
         walked[[x, y]] = true;
+        for joint in self.bad.iter() {
+            let (x, y) = joint.target();
+            walked[[x, y]] = true;
+        }
         walked
     }
     pub fn build_dfs(&self) -> impl Iterator<Item = Maze2D> {

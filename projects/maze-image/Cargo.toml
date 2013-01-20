@@ -2,7 +2,7 @@
 name = "maze-image"
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
-description = "..."
+description = "Render maze to image."
 repository = "https://github.com/oovm/deus-maze"
 documentation = "https://docs.rs/deus-maze"
 readme = "Readme.md"
@@ -14,11 +14,11 @@ image = "0.24.6"
 tracing = "0.1.37"
 
 [dependencies.maze-core]
-version = "0.0.0"
+version = "0.0.1"
 path = "../maze-core"
 
 [dev-dependencies]
 
 [features]
-default = ["mota"]
+default = []
 mota = []

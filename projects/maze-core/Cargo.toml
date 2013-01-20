@@ -1,10 +1,10 @@
 [package]
 name = "maze-core"
-version = "0.0.0"
+version = "0.0.1"
 authors = ["Aster <192607617@qq.com>"]
-description = "..."
+description = "Generate and solve maze"
 repository = "https://github.com/oovm/deus-maze"
-documentation = "https://docs.rs/deus-maze"
+documentation = "https://docs.rs/maze-core"
 readme = "Readme.md"
 license = "MPL-2.0"
 edition = "2021"

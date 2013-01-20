@@ -1,15 +1,9 @@
-pub struct MazeRadiantRenderer {
-    block_size: usize,
-}
+pub struct MazeRadiantRenderer {}
 
 impl Default for MazeRadiantRenderer {
     fn default() -> Self {
-        Self { block_size: 10 }
+        Self {}
     }
 }
 
-impl MazeRadiantRenderer {
-    pub fn new(size: usize) -> Self {
-        Self { block_size: size, ..Default::default() }
-    }
-}
+impl MazeRadiantRenderer {}

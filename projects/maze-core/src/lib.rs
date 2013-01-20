@@ -4,4 +4,4 @@
 pub mod hexagon;
 pub mod square;
 
-pub use rand::{rngs::SmallRng, SeedableRng};
+pub use rand::{rngs::SmallRng, Rng, SeedableRng};

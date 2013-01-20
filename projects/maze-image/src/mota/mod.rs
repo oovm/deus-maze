@@ -1,79 +1,51 @@
 use image::RgbaImage;
-use maze_core::{square::Maze2D, SeedableRng, SmallRng};
+use maze_core::{square::Maze2D, Rng, SeedableRng, SmallRng};
 use std::path::Path;
 
 pub struct MazeMotaRenderer {
     wall: RgbaImage,
-    doors: Vec<RgbaImage>,
     floor_up: RgbaImage,
     floor_down: RgbaImage,
-    monsters: Vec<RgbaImage>,
-    items: Vec<RgbaImage>,
-    road: RgbaImage,
-    door_weight: f32,
-    monster_weight: f32,
-    item_weight: f32,
-    road_weight: f32,
+    items: Vec<(f32, RgbaImage)>,
+    road: (f32, RgbaImage),
 }
 
 impl Default for MazeMotaRenderer {
     fn default() -> Self {
         Self {
-            doors: vec![],
+            wall: Default::default(),
             floor_up: Default::default(),
             floor_down: Default::default(),
-            road: Default::default(),
-            wall: Default::default(),
-            monsters: vec![],
             items: vec![],
-            door_weight: 0.02,
-            item_weight: 0.04,
-            monster_weight: 0.08,
-            road_weight: 1.0,
+            road: (0.0, Default::default()),
         }
     }
 }
 
 impl MazeMotaRenderer {
-    pub fn new() -> Self {
-        Self { ..Default::default() }
-    }
-    pub fn set_wall(&mut self, image: &Path) -> Result<(), image::ImageError> {
-        self.wall = image::open(image)?.to_rgba();
+    pub fn add_wall(&mut self, image: &Path) -> Result<(), image::ImageError> {
+        self.wall = image::open(image)?.into_rgba8();
         Ok(())
     }
-    pub fn set_floor_up(&mut self, up: &Path, down: &Path) -> Result<(), image::ImageError> {
-        self.floor_up = image::open(up)?.to_rgba();
-        self.floor_down = image::open(down)?.to_rgba();
+    pub fn add_floor(&mut self, up: &Path, down: &Path) -> Result<(), image::ImageError> {
+        self.floor_up = image::open(up)?.into_rgba8();
+        self.floor_down = image::open(down)?.into_rgba8();
         Ok(())
     }
-
-    pub fn add_door(&mut self, image: &Path) -> Result<(), image::ImageError> {
-        self.doors.push(image::open(image)?.to_rgba());
+    pub fn add_item(&mut self, image: &Path, weight: f32) -> Result<(), image::ImageError> {
+        self.items.push((weight, image::open(image)?.into_rgba8()));
         Ok(())
     }
-    pub fn set_door_weight(&mut self, weight: f32) {
-        self.door_weight = weight;
-    }
-    pub fn add_monster(&mut self, image: &Path) -> Result<(), image::ImageError> {
-        self.monsters.push(image::open(image)?.to_rgba());
+    pub fn add_road(&mut self, image: &Path, weight: f32) -> Result<(), image::ImageError> {
+        self.road = (weight, image::open(image)?.into_rgba8());
         Ok(())
-    }
-    pub fn set_monster_weight(&mut self, weight: f32) {
-        self.monster_weight = weight;
-    }
-    pub fn add_item(&mut self, image: &Path) -> Result<(), image::ImageError> {
-        self.items.push(image::open(image)?.to_rgba());
-        Ok(())
-    }
-    pub fn set_item_weight(&mut self, weight: f32) {
-        self.item_weight = weight;
     }
     pub fn render_2d(&self, maze: &Maze2D) -> RgbaImage {
         const CELL_SIZE: usize = 32;
         let mut rng = SmallRng::from_entropy();
-        let width = (maze.ncols() * CELL_SIZE) as u32;
-        let height = (maze.nrows() * CELL_SIZE) as u32;
+        let size = maze.get_size();
+        let width = (size.0 * CELL_SIZE) as u32;
+        let height = (size.1 * CELL_SIZE) as u32;
         let mut image = RgbaImage::new(width, height);
         for ((i, j), v) in maze.matrix01().indexed_iter() {
             let x = (i * CELL_SIZE) as u32;
@@ -92,30 +64,21 @@ impl MazeMotaRenderer {
     // selected in [door, monster, item, road]
     pub fn select_image(&self, rng: &mut SmallRng, is_path: bool) -> &RgbaImage {
         if is_path {
-            let mut r = rng.gen_range(0.0, self.all_weight());
-            // maybe road
-            if r < self.road_weight {
-                return &self.road;
+            let weight = rng.gen_range(0.0..self.all_weight());
+            let mut sum = 0.0;
+            for (w, image) in &self.items {
+                sum += *w;
+                if weight < sum {
+                    return image;
+                }
             }
-            r -= self.road_weight;
-            // maybe monster
-            if r < self.monster_weight {
-                return &self.monsters[rng.gen_range(0, self.monsters.len())];
-            }
-            r -= self.monster_weight;
-            // maybe item
-            if r < self.item_weight {
-                return &self.items[rng.gen_range(0, self.items.len())];
-            }
-            r -= self.item_weight;
-            // maybe door
-            &self.doors[rng.gen_range(0, self.doors.len())]
+            &self.road.1
         }
         else {
             &self.wall
         }
     }
     fn all_weight(&self) -> f32 {
-        self.door_weight + self.monster_weight + self.item_weight + self.road_weight
+        self.items.iter().map(|(w, _)| *w).sum::<f32>() + self.road.0
     }
 }
