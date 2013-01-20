@@ -42,8 +42,10 @@ impl MazeLineRenderer {
     fn render_wall(&self, image: &mut RgbaImage, joint: &Joint, lower: usize, right: usize) {
         let border = self.wall_width_half;
         match joint.direction {
-            Direction::Up if joint.y == 0 => self.render_rect(image, joint.x * self.block_size, 0, self.block_size, border * 2),
-            Direction::Up => self.render_rect(
+            Direction::Y(true) if joint.y == 0 => {
+                self.render_rect(image, joint.x * self.block_size, 0, self.block_size, border * 2)
+            }
+            Direction::Y(true) => self.render_rect(
                 image,
                 (joint.x * self.block_size).saturating_sub(border),
                 joint.y * self.block_size,
@@ -51,38 +53,38 @@ impl MazeLineRenderer {
                 border,
             ),
             // lowest wall
-            Direction::Down if joint.y == lower - 1 => self.render_rect(
+            Direction::Y(false) if joint.y == lower - 1 => self.render_rect(
                 image,
                 joint.x * self.block_size,
                 (joint.y + 1) * self.block_size - border * 2,
                 self.block_size,
                 border * 2,
             ),
-            Direction::Down => self.render_rect(
+            Direction::Y(false) => self.render_rect(
                 image,
                 (joint.x * self.block_size).saturating_sub(border),
                 (joint.y + 1) * self.block_size - border,
                 self.block_size + border * 2,
                 border,
             ),
-            Direction::Left if joint.x == 0 => {
+            Direction::X(false) if joint.x == 0 => {
                 self.render_rect(image, 0, joint.y * self.block_size, border * 2, self.block_size)
             }
-            Direction::Left => self.render_rect(
+            Direction::X(false) => self.render_rect(
                 image,
                 joint.x * self.block_size,
                 (joint.y * self.block_size).saturating_sub(border),
                 border,
                 self.block_size + border,
             ),
-            Direction::Right if joint.x == right - 1 => self.render_rect(
+            Direction::X(true) if joint.x == right - 1 => self.render_rect(
                 image,
                 (joint.x + 1) * self.block_size - border * 2,
                 joint.y * self.block_size,
                 border * 2,
                 self.block_size,
             ),
-            Direction::Right => self.render_rect(
+            Direction::X(true) => self.render_rect(
                 image,
                 (joint.x + 1) * self.block_size - border,
                 (joint.y * self.block_size).saturating_sub(border),

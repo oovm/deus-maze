@@ -2,6 +2,7 @@ use ndarray::Array2;
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use std::{iter::from_generator, ops::Range};
+use taxicab_map::Direction;
 
 mod build_dfs;
 mod build_prim;
@@ -32,14 +33,6 @@ pub struct Room {
     pub y: usize,
     pub width: usize,
     pub height: usize,
-}
-
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
-pub enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]

@@ -48,9 +48,8 @@ impl Maze2DConfig {
         let mut walked = Array2::from_elem((self.width, self.height), false);
         let (x, y) = self.get_entry();
         walked[[x, y]] = true;
-        for joint in self.bad.iter() {
-            let (x, y) = joint.target();
-            walked[[x, y]] = true;
+        for (x, y) in self.bad.iter() {
+            walked[[*x, *y]] = true;
         }
         walked
     }

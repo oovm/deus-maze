@@ -1,5 +1,5 @@
 use maze_core::square::Maze2DConfig;
-use maze_image::{MazeBlockRenderer, MazeLineRenderer, MazeMotaRenderer};
+use maze_image::{MazeBlockRenderer, MazeLineRenderer};
 use std::path::Path;
 #[test]
 fn ready() {
@@ -29,11 +29,12 @@ fn test2() -> std::io::Result<()> {
 }
 
 #[test]
+#[cfg(feature = "mota")]
 fn test_mota() -> Result<(), image::error::ImageError> {
     let here = Path::new(env!("CARGO_MANIFEST_DIR")).canonicalize()?.join("assets");
     let config = Maze2DConfig::default().with_size(20, 20);
     let out = config.build_dfs().last().unwrap();
-    let mut mota = MazeMotaRenderer::default();
+    let mut mota = maze_image::MazeMotaRenderer::default();
     mota.add_wall(&here.join("wall.png"))?;
     mota.add_floor(&here.join("floor_up.png"), &here.join("floor_down.png"))?;
     mota.add_road(&here.join("road.png"), 100.0)?;
