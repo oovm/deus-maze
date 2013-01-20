@@ -1,5 +1,4 @@
 use super::*;
-use std::collections::VecDeque;
 
 impl Maze2D {
     pub fn new(config: &Maze2DConfig, joints: &[Joint], rooms: &[Room]) -> Self {

@@ -1,8 +1,5 @@
 use image::{Rgba, RgbaImage};
-use maze_core::{
-    square,
-    square::{Direction, Joint, Maze2D},
-};
+use maze_core::square::{Direction, Joint, Maze2D};
 
 pub struct MazeLineRenderer {
     block_size: usize,
@@ -28,6 +25,10 @@ impl MazeLineRenderer {
         }
         self.wall_width_half = width / 2;
     }
+    pub fn with_wall_width(mut self, width: usize) -> Self {
+        self.set_wall_width(width);
+        self
+    }
     pub fn render_image_2d(&self, maze: &Maze2D) -> RgbaImage {
         let (w, h) = maze.get_size();
         let bw = self.block_size * w;
@@ -40,14 +41,13 @@ impl MazeLineRenderer {
     }
     fn render_wall(&self, image: &mut RgbaImage, joint: &Joint, lower: usize, right: usize) {
         let border = self.wall_width_half;
-        println!("{} {}", joint.y, lower);
         match joint.direction {
             Direction::Up if joint.y == 0 => self.render_rect(image, joint.x * self.block_size, 0, self.block_size, border * 2),
             Direction::Up => self.render_rect(
                 image,
-                joint.x * self.block_size,
+                (joint.x * self.block_size).saturating_sub(border),
                 joint.y * self.block_size,
-                self.block_size + self.wall_width_half,
+                self.block_size + border * 2,
                 border,
             ),
             // lowest wall
@@ -60,9 +60,9 @@ impl MazeLineRenderer {
             ),
             Direction::Down => self.render_rect(
                 image,
-                joint.x * self.block_size,
+                (joint.x * self.block_size).saturating_sub(border),
                 (joint.y + 1) * self.block_size - border,
-                self.block_size + self.wall_width_half,
+                self.block_size + border * 2,
                 border,
             ),
             Direction::Left if joint.x == 0 => {
@@ -71,9 +71,9 @@ impl MazeLineRenderer {
             Direction::Left => self.render_rect(
                 image,
                 joint.x * self.block_size,
-                joint.y * self.block_size,
+                (joint.y * self.block_size).saturating_sub(border),
                 border,
-                self.block_size + self.wall_width_half,
+                self.block_size + border,
             ),
             Direction::Right if joint.x == right - 1 => self.render_rect(
                 image,
@@ -85,9 +85,9 @@ impl MazeLineRenderer {
             Direction::Right => self.render_rect(
                 image,
                 (joint.x + 1) * self.block_size - border,
-                joint.y * self.block_size,
+                (joint.y * self.block_size).saturating_sub(border),
                 border,
-                self.block_size + self.wall_width_half,
+                self.block_size + border,
             ),
         }
     }

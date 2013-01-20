@@ -1,5 +1,6 @@
 mod block;
 mod line;
+#[cfg(feature = "mota")]
 mod mota;
 mod radiant;
 
