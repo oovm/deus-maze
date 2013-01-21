@@ -1,4 +1,3 @@
-use ndarray::Array2;
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use std::{iter::from_generator, ops::Range};

@@ -18,17 +18,19 @@ impl Maze2D {
         let mut walls = Vec::new();
         for x in 0..self.config.width {
             for y in 0..self.config.height {
-                if !m01[[x * 2 + 1, y * 2 + 0]] {
-                    walls.push(Joint::new(x, y, Direction::Y(true)));
+                let x = x as isize;
+                let y = y as isize;
+                if !m01[(x * 2 + 1, y * 2 + 0)] {
+                    walls.push(Joint::new(x as usize, y as usize, Direction::Y(true)));
                 }
-                if !m01[[x * 2 + 1, y * 2 + 2]] {
-                    walls.push(Joint::new(x, y, Direction::Y(false)));
+                if !m01[(x * 2 + 1, y * 2 + 2)] {
+                    walls.push(Joint::new(x as usize, y as usize, Direction::Y(false)));
                 }
-                if !m01[[x * 2 + 0, y * 2 + 1]] {
-                    walls.push(Joint::new(x, y, Direction::X(false)));
+                if !m01[(x * 2 + 0, y * 2 + 1)] {
+                    walls.push(Joint::new(x as usize, y as usize, Direction::X(false)));
                 }
-                if !m01[[x * 2 + 2, y * 2 + 1]] {
-                    walls.push(Joint::new(x, y, Direction::X(true)));
+                if !m01[(x * 2 + 2, y * 2 + 1)] {
+                    walls.push(Joint::new(x as usize, y as usize, Direction::X(true)));
                 }
             }
         }

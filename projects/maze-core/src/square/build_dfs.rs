@@ -1,10 +1,11 @@
 use super::*;
+use taxicab_map::TaxicabMap;
 
 #[derive(Clone, Debug)]
 pub struct MazeState {
     pub width: usize,
     pub height: usize,
-    pub walked: Array2<bool>,
+    pub walked: TaxicabMap<bool>,
     pub joints: Vec<Joint>,
     pub rng: SmallRng,
 }
@@ -20,12 +21,12 @@ impl MazeState {
     }
     #[inline]
     pub fn is_finished(&self) -> bool {
-        self.walked.iter().all(|&walked| walked)
+        self.walked.points_all().all(|(_, _, walked)| *walked)
     }
     #[inline]
     pub fn is_walked(&self, joint: &Joint) -> bool {
         let (x, y) = joint.target();
-        self.walked[[x, y]]
+        self.walked.get_point(x as isize, y as isize).map(|s| *s).unwrap_or(true)
     }
 }
 
@@ -38,18 +39,18 @@ impl BfsWorker {
         let joint = &nearby[index];
         let (x, y) = (joint.target().0, joint.target().1);
         self.walked.push((x, y));
-        state.walked[[x, y]] = true;
+        state.walked.set_point(x as isize, y as isize, true);
         state.joints.push(*joint);
     }
 }
 
 impl Maze2DConfig {
-    pub fn initial(&self) -> Array2<bool> {
-        let mut walked = Array2::from_elem((self.width, self.height), false);
+    pub fn initial(&self) -> TaxicabMap<bool> {
+        let mut walked = TaxicabMap::rectangle(self.width, self.height, &false);
         let (x, y) = self.get_entry();
-        walked[[x, y]] = true;
+        walked.set_point(x as isize, y as isize, true);
         for (x, y) in self.bad.iter() {
-            walked[[*x, *y]] = true;
+            walked.set_point(*x as isize, *y as isize, true);
         }
         walked
     }

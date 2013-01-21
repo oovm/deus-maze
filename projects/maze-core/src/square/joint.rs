@@ -1,4 +1,5 @@
 use super::*;
+use taxicab_map::TaxicabMap;
 
 impl Joint {
     pub fn new(x: usize, y: usize, direction: Direction) -> Self {
@@ -32,19 +33,20 @@ impl Joint {
         }
     }
     #[rustfmt::skip]
-    pub fn render_path(width: usize, height: usize, joints: &[Joint]) -> Array2<bool> {
-        let size = (width * 2 + 1, height * 2 + 1);
-        let mut matrix = Array2::from_elem(size, false);
+    pub fn render_path(width: usize, height: usize, joints: &[Joint]) -> TaxicabMap<bool> {
+        let mut matrix = TaxicabMap::rectangle(width * 2 + 1, height * 2 + 1, &false);
         for joint in joints {
             let (sx, sy) = joint.source();
             let (tx, ty) = joint.target();
-            matrix[[sx * 2 + 1, sy * 2 + 1]] = true;
-            matrix[[tx * 2 + 1, ty * 2 + 1]] = true;
+            let (sx, sy) = (sx as isize, sy as isize);
+            let (tx, ty) = (tx as isize, ty as isize);
+            matrix[(sx * 2 + 1, sy * 2 + 1)] = true;
+            matrix[(tx * 2 + 1, ty * 2 + 1)] = true;
             match joint.direction {
-                Direction::Y(true)  => matrix[[sx * 2 + 1, sy * 2 + 0]] = true,
-                Direction::Y(false) => matrix[[sx * 2 + 1, sy * 2 + 2]] = true,
-                Direction::X(false)  => matrix[[sx * 2 + 0, sy * 2 + 1]] = true,
-                Direction::X(true) => matrix[[sx * 2 + 2, sy * 2 + 1]] = true,
+                Direction::Y(true)  => matrix[(sx * 2 + 1, sy * 2 + 0)] = true,
+                Direction::Y(false) => matrix[(sx * 2 + 1, sy * 2 + 2)] = true,
+                Direction::X(false)  => matrix[(sx * 2 + 0, sy * 2 + 1)] = true,
+                Direction::X(true) => matrix[(sx * 2 + 2, sy * 2 + 1)] = true,
             }
         }
         matrix
@@ -52,7 +54,7 @@ impl Joint {
 }
 
 impl Maze2D {
-    pub fn matrix01(&self) -> Array2<bool> {
+    pub fn matrix01(&self) -> TaxicabMap<bool> {
         Joint::render_path(self.config.width, self.config.height, &self.joints)
     }
 }

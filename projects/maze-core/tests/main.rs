@@ -13,10 +13,3 @@ fn test() {
         println!("{}", maze);
     }
 }
-
-#[test]
-fn test2() {
-    let config = Maze2DConfig::default().with_size(50, 50);
-    let out = config.build_dfs().last().unwrap();
-    print!("{}", out.render_box_drawings())
-}
