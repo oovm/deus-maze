@@ -1,9 +1,13 @@
-use crate::square::{Joint, Maze2D};
+use crate::square::Maze2D;
 use std::fmt::{Debug, Display, Formatter};
 
-impl Debug for Joint {
+impl Debug for Maze2D {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Joint({}, {}, {:?})", self.x, self.y, self.direction)
+        f.debug_struct("Maze2D")
+            .field("width", &self.config.width)
+            .field("height", &self.config.height)
+            .field("joints", &self.joints)
+            .finish()
     }
 }
 

@@ -12,12 +12,12 @@ pub struct MazeState {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct BfsWorker {
-    walked: Vec<(usize, usize)>,
+    walked: Vec<(isize, isize)>,
 }
 
 impl MazeState {
-    pub fn nearby(&self, x: usize, y: usize) -> Vec<Joint> {
-        Joint::all(x, y, self.width, self.height).iter().filter(|joint| !self.is_walked(joint)).cloned().collect()
+    pub fn nearby(&self, x: isize, y: isize) -> Vec<Joint> {
+        self.walked.joints_nearby(x, y).iter().filter(|joint| !self.is_walked(joint)).cloned().collect()
     }
     #[inline]
     pub fn is_finished(&self) -> bool {
@@ -56,7 +56,8 @@ impl Maze2DConfig {
     }
     pub fn build_dfs(&self) -> impl Iterator<Item = Maze2D> {
         let config = self.clone();
-        let mut worker = BfsWorker { walked: vec![self.get_entry()] };
+        let entry = self.get_entry();
+        let mut worker = BfsWorker { walked: vec![(entry.0 as isize, entry.1 as isize)] };
         let mut state = MazeState {
             width: self.width,
             height: self.height,

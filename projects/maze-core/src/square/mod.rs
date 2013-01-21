@@ -1,12 +1,11 @@
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use std::{iter::from_generator, ops::Range};
-use taxicab_map::Direction;
+use taxicab_map::{Direction, Joint};
 
 mod build_dfs;
 mod build_prim;
 mod display;
-mod joint;
 mod maze;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -34,14 +33,7 @@ pub struct Room {
     pub height: usize,
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
-pub struct Joint {
-    pub x: usize,
-    pub y: usize,
-    pub direction: Direction,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Maze2D {
     config: Maze2DConfig,
     joints: Vec<Joint>,
