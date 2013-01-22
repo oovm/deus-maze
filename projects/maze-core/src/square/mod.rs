@@ -1,7 +1,7 @@
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use std::{iter::from_generator, ops::Range};
-use taxicab_map::{Direction, Joint};
+pub use taxicab_map::{Direction, Joint};
 
 mod build_dfs;
 mod build_prim;
@@ -15,7 +15,7 @@ pub struct Maze2DConfig {
     entry: Option<(usize, usize)>,
     exit: Option<(usize, usize)>,
     room: Option<RoomConfig>,
-    bad: Vec<(usize, usize)>,
+    bad: Vec<(isize, isize)>,
     seed: [u8; 32],
 }
 
@@ -43,8 +43,7 @@ pub struct Maze2D {
 
 impl Default for Maze2DConfig {
     fn default() -> Self {
-        let seed = rand::random::<[u8; 32]>();
-        Self { width: 5, height: 5, entry: None, exit: None, room: None, bad: vec![], seed }
+        Self { width: 5, height: 5, entry: None, exit: None, room: None, bad: vec![], seed: rand::random() }
     }
 }
 
@@ -102,9 +101,8 @@ impl Maze2DConfig {
         self.seed = seed;
     }
     pub fn new_seed(&mut self) -> [u8; 32] {
-        let seed = rand::random::<[u8; 32]>();
-        self.set_seed(seed);
-        seed
+        self.set_seed(rand::random());
+        self.seed
     }
     pub fn with_seed(mut self, seed: [u8; 32]) -> Self {
         self.set_seed(seed);

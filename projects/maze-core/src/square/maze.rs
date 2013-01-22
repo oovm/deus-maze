@@ -14,11 +14,13 @@ impl Maze2D {
     pub fn get_size(&self) -> (usize, usize) {
         self.config.get_size()
     }
+    pub(crate) fn get_isize_size(&self) -> (isize, isize) {
+        (self.config.width as isize, self.config.height as isize)
+    }
     pub fn get_walls(&self) -> Vec<Joint> {
         let m01 = self.matrix01();
         let mut walls = Vec::new();
-        let w = self.config.width as isize;
-        let h = self.config.height as isize;
+        let (w, h) = self.get_isize_size();
         for x in 0..w {
             for y in 0..h {
                 if !m01[(x * 2 + 1, y * 2 + 0)] {
@@ -57,8 +59,8 @@ impl Maze2D {
             matrix[(sx * 2 + 1, sy * 2 + 1)] = true;
             matrix[(tx * 2 + 1, ty * 2 + 1)] = true;
             match joint.direction {
-                Direction::Y(true) => matrix[(sx * 2 + 1, sy * 2 + 0)] = true,
-                Direction::Y(false) => matrix[(sx * 2 + 1, sy * 2 + 2)] = true,
+                Direction::Y(true) => matrix[(sx * 2 + 1, sy * 2 + 2)] = true,
+                Direction::Y(false) => matrix[(sx * 2 + 1, sy * 2 + 0)] = true,
                 Direction::X(false) => matrix[(sx * 2 + 0, sy * 2 + 1)] = true,
                 Direction::X(true) => matrix[(sx * 2 + 2, sy * 2 + 1)] = true,
             }

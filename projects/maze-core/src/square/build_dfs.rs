@@ -50,7 +50,7 @@ impl Maze2DConfig {
         let (x, y) = self.get_entry();
         walked.set_point(x as isize, y as isize, true);
         for (x, y) in self.bad.iter() {
-            walked.set_point(*x as isize, *y as isize, true);
+            walked.set_point(*x, *y, true);
         }
         walked
     }

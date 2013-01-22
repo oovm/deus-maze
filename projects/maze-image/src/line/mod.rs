@@ -2,8 +2,8 @@ use image::{Rgba, RgbaImage};
 use maze_core::square::{Direction, Joint, Maze2D};
 
 pub struct MazeLineRenderer {
-    block_size: usize,
-    wall_width_half: usize,
+    block_size: isize,
+    wall_width_half: isize,
     wall_color: Rgba<u8>,
 }
 
@@ -15,7 +15,7 @@ impl Default for MazeLineRenderer {
 
 impl MazeLineRenderer {
     pub fn new(size: usize) -> Self {
-        Self { block_size: size, ..Default::default() }
+        Self { block_size: size as isize, ..Default::default() }
     }
     pub fn set_wall_width(&mut self, width: usize) {
         if cfg!(debug_assertions) {
@@ -23,7 +23,7 @@ impl MazeLineRenderer {
                 tracing::warn!("Wall width should be an even number.");
             }
         }
-        self.wall_width_half = width / 2;
+        self.wall_width_half = width as isize / 2;
     }
     pub fn with_wall_width(mut self, width: usize) -> Self {
         self.set_wall_width(width);
@@ -31,6 +31,7 @@ impl MazeLineRenderer {
     }
     pub fn render_image_2d(&self, maze: &Maze2D) -> RgbaImage {
         let (w, h) = maze.get_size();
+        let (w, h) = (w as isize, h as isize);
         let bw = self.block_size * w;
         let bh = self.block_size * h;
         let mut image = RgbaImage::new(bw as u32, bh as u32);
@@ -39,7 +40,7 @@ impl MazeLineRenderer {
         }
         image
     }
-    fn render_wall(&self, image: &mut RgbaImage, joint: &Joint, lower: usize, right: usize) {
+    fn render_wall(&self, image: &mut RgbaImage, joint: &Joint, lower: isize, right: isize) {
         let border = self.wall_width_half;
         match joint.direction {
             Direction::Y(true) if joint.y == 0 => {
@@ -93,7 +94,7 @@ impl MazeLineRenderer {
             ),
         }
     }
-    fn render_rect(&self, image: &mut RgbaImage, x: usize, y: usize, width: usize, height: usize) {
+    fn render_rect(&self, image: &mut RgbaImage, x: isize, y: isize, width: isize, height: isize) {
         for i in x..x + width {
             for j in y..y + height {
                 match image.get_pixel_mut_checked(i as u32, j as u32) {

@@ -1,18 +1,8 @@
 use maze_core::square::Maze2DConfig;
 use maze_image::{MazeBlockRenderer, MazeLineRenderer};
-use std::path::Path;
 #[test]
 fn ready() {
     println!("it works!")
-}
-
-#[test]
-fn test() {
-    let config = Maze2DConfig::default().with_size(5, 5);
-    for (i, maze) in config.build_dfs().enumerate() {
-        println!("Maze #{}", i);
-        println!("{}", maze);
-    }
 }
 
 #[test]
@@ -29,9 +19,10 @@ fn test2() -> std::io::Result<()> {
 }
 
 #[test]
+#[ignore]
 #[cfg(feature = "mota")]
 fn test_mota() -> Result<(), image::error::ImageError> {
-    let here = Path::new(env!("CARGO_MANIFEST_DIR")).canonicalize()?.join("assets");
+    let here = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).canonicalize()?.join("assets");
     let config = Maze2DConfig::default().with_size(20, 20);
     let out = config.build_dfs().last().unwrap();
     let mut mota = maze_image::MazeMotaRenderer::default();

@@ -14,7 +14,7 @@ image = "0.24.6"
 tracing = "0.1.37"
 
 [dependencies.maze-core]
-version = "0.0.1"
+version = "0.0.2"
 path = "../maze-core"
 
 [dev-dependencies]
