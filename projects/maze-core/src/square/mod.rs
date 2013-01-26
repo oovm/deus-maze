@@ -58,7 +58,7 @@ impl Maze2DConfig {
     /// # Examples
     ///
     /// ```
-    /// use deus_maze::Maze2DConfig;
+    /// use maze_core::square::Maze2DConfig;
     /// ```
     pub fn new(width: usize, height: usize) -> Self {
         Self { width, height, ..Default::default() }
